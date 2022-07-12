@@ -1,0 +1,14 @@
+{% extends 'parts/base.twig' %}
+
+{% block body %}
+<h1> Your picture is ready</h1>
+{% if filename is not null %}
+    <div class="container" role="main">
+        <img src="/uploads/{{ filename }}" alt="..." class="img-thumbnail" width="500">
+        <a class="btn btn-lg btn-primary" href="/new" role="button">Rewrite</a>
+        <a class="btn btn-lg btn-success" href="/down" role="button">Download</a>
+    </div>
+{% endif %}
+
+
+{% endblock %}
