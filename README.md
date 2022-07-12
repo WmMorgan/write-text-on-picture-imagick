@@ -1,2 +1,2 @@
-# write-text-on-picture-imagick-
+# Write-text-on-picture-imagick
 включает веб-страницу и API
