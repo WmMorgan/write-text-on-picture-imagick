@@ -1,13 +1,5 @@
 <?php
 
-use App\Models\Sign;
-
-require_once __DIR__.'/vendor/autoload.php';
-$db = new Sign();
-$user = $db->db->queryRow('SELECT * FROM tokens WHERE id=:id', array(':id' => 1));
-
-
-print $user;
 
 /*$src1 = new Imagick(__DIR__."/it.jpg");
 $src2 = new Imagick(__DIR__."/transparent.png");
