@@ -1,2 +1,2 @@
 # write-text-on-picture-imagick-
-SLIM, TWIG, RESTAPI
+включает веб-страницу и API
