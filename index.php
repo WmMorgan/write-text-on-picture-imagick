@@ -106,12 +106,7 @@ $app->get('/api', RestApiController::class);
 $app->post('/api/create', RestApiController::class . ':create');
 $app->delete('/api/delete', RestApiController::class . ':delete');
 $app->post('/api/sign', RestApiController::class . ':sign');
-$app->post('/sos', function (ServerRequestInterface $request, ResponseInterface  $response) {
-    $json = $request->getHeader("token")[0];
-    $response = $response->withStatus(202);
-    $response->getBody()->write($json);
-    return $response;
-});
+
 
 $errorMiddleware = $app->addErrorMiddleware(true, false, false);
 

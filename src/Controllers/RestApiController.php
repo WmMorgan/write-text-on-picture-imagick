@@ -37,7 +37,7 @@ $error = json_encode([
     'status' => "error",
     'message' => $exception->getMessage()
 ]);
- $response = $response->withHeader('Content-type', 'application/json');
+ $response = $response->withHeader('Content-type', 'application/json')->withStatus(401);
  $response->getBody()->write($error);
         }
         return $response;
@@ -51,10 +51,10 @@ $error = json_encode([
      */
     public function validate(array $data) :bool {
         if (empty($data['text'])) {
-            throw new \Exception('no text available');
+            throw new \Exception('no text available', 400);
         }
         if (empty($data['link'])) {
-            throw new \Exception('no link available');
+            throw new \Exception('no link available', 400);
         }
         return true;
     }
@@ -64,10 +64,10 @@ $error = json_encode([
      * @return array
      * USER token validate
      */
-    public function authUserToken(string $token) :array {
+    public function authUserToken(string $token = null) :array {
         $user = $this->sqlite->db->queryRow('SELECT * FROM tokens WHERE token=:token', array(':token' => $token));
-        if ($user == false) {
-            throw new \Exception('user token not found');
+        if (empty($token) || $user == false) {
+            throw new \Exception('user token not found', 401);
         } else {
             return $user;
         }
@@ -88,7 +88,7 @@ $error = json_encode([
             $link = $request_main['link'];
             $filename = bin2hex(random_bytes(8)).'.jpg';
             if (!copy($link, 'uploads/'.$filename)) {
-                throw new \RuntimeException('photo not found');
+                throw new \RuntimeException('photo not found', 400);
             }
             $image = new Photo();
             $image->editSave($filename, $text);
@@ -104,7 +104,7 @@ $error = json_encode([
             $response_main_err = json_encode([
                 'status' => 'error',
                 'message' => $exception->getMessage()]);
-            $response = $response->withHeader('Content-type', 'application/json')->withStatus(404);
+            $response = $response->withHeader('Content-type', 'application/json')->withStatus($exception->getCode());
             $response->getBody()->write($response_main_err);
         }
 
@@ -123,10 +123,10 @@ $error = json_encode([
             $this->authUserToken($token);
             $delete_req = (array)$request->getParsedBody();
             if (empty($delete_req['filename'])) {
-                throw new \RuntimeException('no file-name available');
+                throw new \RuntimeException('no file-name available', 400);
             }
             if (!unlink('uploads/'.$delete_req['filename'])) {
-                throw new \RuntimeException('no file available');
+                throw new \RuntimeException('no file available', 400);
             }
             $response_main = json_encode([
                 'status' => "success",
@@ -139,7 +139,7 @@ $error = json_encode([
                 'status' => "error",
                 'message' => $exception->getMessage()
              ]);
-            $response = $response->withHeader('Content-type', 'application/json')->withStatus(404);
+            $response = $response->withHeader('Content-type', 'application/json')->withStatus($exception->getCode());
             $response->getBody()->write($response_main_err);
         }
         return $response;
@@ -148,12 +148,12 @@ $error = json_encode([
      * @param string $token
      * ADMIN token validate
      */
-    public function authToken(string $token) :void {
+    public function authToken(string $token = null) :void {
 
         if (empty($token)) {
-            throw new \Exception('admin token not found');
+            throw new \Exception('admin token not found', 400);
         } else if ($token !== $this->AdminToken) {
-            throw new \Exception('admin token is invalid');
+            throw new \Exception('admin token is invalid', 400);
         }
     }
 
@@ -184,7 +184,7 @@ $error = json_encode([
                 'status' => 'error',
                 'message' => $e->getMessage()
             ]);
-            $response = $response->withHeader('Content-type', 'application/json')->withStatus(404);
+            $response = $response->withHeader('Content-type', 'application/json')->withStatus($e->getCode());
             $response->getBody()->write($err);
         }
         return $response;

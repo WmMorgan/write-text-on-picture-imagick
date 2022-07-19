@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit bootstrap="vendor/autoload.php">
-    <testsuite name="User">
-    <directory suffix="Test.php">./tests/User</directory>
-    </testsuite>
-    <testsuite name="Imagick">
-    <directory suffix="Test.php">./tests/Imagick</directory>
+    <testsuite name="Controllers">
+    <directory suffix="Test.php">./tests/Controllers</directory>
     </testsuite>
 </phpunit>

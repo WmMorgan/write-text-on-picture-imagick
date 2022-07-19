@@ -19,7 +19,8 @@
         "twig/twig": "3.x-dev",
         "slim/slim": "^4.9",
         "slim/psr7": "^1.5",
-        "respect/validation": "dev-master"
+        "respect/validation": "dev-master",
+        "guzzlehttp/guzzle": "7.0"
     },
     "scripts": {
         "test" : "vendor/bin/phpunit"

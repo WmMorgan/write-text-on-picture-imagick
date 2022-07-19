@@ -43,7 +43,7 @@ class Sign
 public function signValidate(array $data) {
     $sign_validate = $this->db->queryValue('SELECT COUNT(*) FROM tokens WHERE phone = "' . $data['phone'] . '" OR email = "' . $data['email'] . '" ');
 if ($sign_validate == true) {
-    throw new \Exception('this email or phone already exits');
+    throw new \Exception('this email or phone already exits', 400);
 }
 
         $validator = new v();
