@@ -3,9 +3,7 @@
 
 namespace App\Models;
 
-use Respect\Validation\Exceptions\AllOfException;
-use Respect\Validation\Exceptions\NestedValidationException;
-use Respect\Validation\Exceptions\ValidationException;
+
 use Respect\Validation\Validator as v;
 
 class Sign
@@ -43,21 +41,21 @@ class Sign
 public function signValidate(array $data) {
     $sign_validate = $this->db->queryValue('SELECT COUNT(*) FROM tokens WHERE phone = "' . $data['phone'] . '" OR email = "' . $data['email'] . '" ');
 if ($sign_validate == true) {
-    throw new \Exception('this email or phone already exits', 400);
+    throw new \Exception('this email or phone already exits');
 }
-
-        $validator = new v();
-        $validator->addRule(v::key('name', v::notEmpty()->setTemplate('The property name must not be empty'))
-            ->key('name', v::length(3, 15)->setTemplate('Name length should be less than 3 characters and not more than 15 characters')));
-        $validator->addRule(v::key('email', v::email()->setTemplate('Email address invalid')));
-        $validator->addRule(v::key('phone', v::digit('+')->setTemplate('Phone number invalid'))
+    $validator = new v();
+    $validator->addRule(v::key('name', v::notEmpty()->setTemplate('The property name must not be empty'))
+        ->key('name', v::length(3, 15)->setTemplate('Name length should be less than 3 characters and not more than 15 characters')));
+    $validator->addRule(v::key('email', v::email()->setTemplate('Email address invalid or not entered')));
+    $validator->addRule(v::key('phone', v::digit('+')->setTemplate('Phone number invalid or no entered'))
         ->key('phone', v::length(12, 15)->setTemplate('Length number min 12 max 15')));
 
         $validator->check($data);
+
 }
     public function sign(array $data)
     {
-        try {
+
             $this->signValidate($data);
 
                 $token = $this->jwttoken($data['phone']);
@@ -68,8 +66,5 @@ if ($sign_validate == true) {
                         'token' => $token));
                 return $token;
 
-        } catch (Exception $e) {
-return $e->getMessage();
-        }
     }
 } //END CLASS

@@ -4,6 +4,7 @@
 namespace Controllers;
 
 
+use App\Models\Sign;
 use GuzzleHttp\Client;
 use PHPUnit\Framework\TestCase;
 
@@ -97,9 +98,23 @@ public function testCreateSuccessAndDeleteSuccess()
     $this->assertEquals('success', $response_delete_twoToArray); // the image was successfully deleted
 
 }
+
 public function testSignParamsAvailable()
 {
+    $response = $this->client->post('/api/sign');;
+    $header = ['headers' => ['token' => $this->token]];
+    $response_one = $this->client->post('/api/sign', $header);
+    $header['json'] = ['name' => "John"];
+    $response_two = $this->client->post('/api/sign', $header);
+    $header['json']['email'] = "john@doe.com";
+    $response_three = $this->client->post('/api/sign', $header);
 
+    $this->assertJson($response->getBody()); // is the response in json?
+    $this->assertEquals(401, $response->getStatusCode()); // Admin unauthorized
+    $this->assertEquals(400, $response_one->getStatusCode()); // status code after authorization
+    $this->assertEquals('name must be present', json_decode($response_one->getBody())->message);
+    $this->assertEquals('email must be present', json_decode($response_two->getBody())->message);
+    $this->assertEquals('phone must be present', json_decode($response_three->getBody())->message);
 }
 
 

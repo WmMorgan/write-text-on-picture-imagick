@@ -151,9 +151,9 @@ $error = json_encode([
     public function authToken(string $token = null) :void {
 
         if (empty($token)) {
-            throw new \Exception('admin token not found', 400);
+            throw new \Exception('admin token not found', 401);
         } else if ($token !== $this->AdminToken) {
-            throw new \Exception('admin token is invalid', 400);
+            throw new \Exception('admin token is invalid', 401);
         }
     }
 
@@ -184,7 +184,8 @@ $error = json_encode([
                 'status' => 'error',
                 'message' => $e->getMessage()
             ]);
-            $response = $response->withHeader('Content-type', 'application/json')->withStatus($e->getCode());
+            $code = $e->getCode() ?: 400;
+            $response = $response->withHeader('Content-type', 'application/json')->withStatus($code);
             $response->getBody()->write($err);
         }
         return $response;
