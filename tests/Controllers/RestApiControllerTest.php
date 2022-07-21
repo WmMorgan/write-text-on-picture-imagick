@@ -108,12 +108,32 @@ class RestApiControllerTest extends TestCase
         $header['json']['email'] = "john@doe.com";
         $response_three = $this->client->post('/api/sign', $header);
 
+
         $this->assertJson($response->getBody()); // is the response in json?
         $this->assertEquals(401, $response->getStatusCode()); // Admin unauthorized
         $this->assertEquals(400, $response_one->getStatusCode()); // status code after authorization
         $this->assertEquals('name must be present', json_decode($response_one->getBody())->message);
         $this->assertEquals('email must be present', json_decode($response_two->getBody())->message);
         $this->assertEquals('phone must be present', json_decode($response_three->getBody())->message);
+
+    }
+
+    public function testSignInvalidParams()
+    {
+        $header = ['headers' => ['token' => $this->token],
+            'json' => ['name' => "Jo"]];
+        $response = $this->client->post('/api/sign', $header);
+        $header['json'] = ['email' => "error@"];
+        $response_one = $this->client->post('/api/sign', $header);
+        $header['json'] = ['phone' => "errorphone"];
+        $response_two = $this->client->post('/api/sign', $header);
+
+        $this->assertStringEndsWith('characters', json_decode($response->getBody())->message); //Name length should be less than 3 characters and not more than 15 characters
+        $this->assertStringEndsWith('not entered', json_decode($response_one->getBody())->message); // Email number invalid or no entered
+        $this->assertStringEndsWith('not entered', json_decode($response_two->getBody())->message); // phone number invalid or no entered
+    }
+    public function testSignSuccessCreate() {
+
     }
 
 
