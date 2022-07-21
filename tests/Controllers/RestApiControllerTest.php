@@ -4,6 +4,7 @@
 namespace Controllers;
 
 
+use App\Models\Sign;
 use GuzzleHttp\Client;
 use PHPUnit\Framework\TestCase;
 
@@ -123,17 +124,18 @@ class RestApiControllerTest extends TestCase
         $header = ['headers' => ['token' => $this->token],
             'json' => ['name' => "Jo"]];
         $response = $this->client->post('/api/sign', $header);
-        $header['json'] = ['email' => "error@"];
+        $header['json'] = ['name' => "John", 'email' => "error@"];
         $response_one = $this->client->post('/api/sign', $header);
-        $header['json'] = ['phone' => "errorphone"];
+        $header['json'] = ['name' => "Johndoe", 'email' => "John@doe.com", 'phone' => "errorphone"];
         $response_two = $this->client->post('/api/sign', $header);
 
         $this->assertStringEndsWith('characters', json_decode($response->getBody())->message); //Name length should be less than 3 characters and not more than 15 characters
-        $this->assertStringEndsWith('not entered', json_decode($response_one->getBody())->message); // Email number invalid or no entered
-        $this->assertStringEndsWith('not entered', json_decode($response_two->getBody())->message); // phone number invalid or no entered
+        $this->assertStringEndsWith('not entered', json_decode($response_one->getBody())->message); // Email number invalid or not entered
+        $this->assertStringEndsWith('no entered', json_decode($response_two->getBody())->message); // phone number invalid or no entered
     }
     public function testSignSuccessCreate() {
-
+       $faker = factory(Sign::class)->create();
+       var_dump($faker);
     }
 
 

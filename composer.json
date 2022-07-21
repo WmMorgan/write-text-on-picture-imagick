@@ -20,7 +20,8 @@
         "slim/slim": "^4.9",
         "slim/psr7": "^1.5",
         "respect/validation": "dev-master",
-        "guzzlehttp/guzzle": "7.0"
+        "guzzlehttp/guzzle": "7.0",
+        "fakerphp/faker": "1.20.x-dev"
     },
     "scripts": {
         "test" : "vendor/bin/phpunit"
