@@ -45,7 +45,7 @@ if ($sign_validate == true) {
 }
     $validator = new v();
     $validator->addRule(v::key('name', v::notEmpty()->setTemplate('The property name must not be empty'))
-        ->key('name', v::length(3, 15)->setTemplate('Name length should be less than 3 characters and not more than 15 characters')));
+        ->key('name', v::length(3, 20)->setTemplate('Name length should be less than 3 characters and not more than 15 characters')));
     $validator->addRule(v::key('email', v::email()->setTemplate('Email address invalid or not entered')));
     $validator->addRule(v::key('phone', v::digit('+')->setTemplate('Phone number invalid or no entered'))
         ->key('phone', v::length(12, 15)->setTemplate('Length number min 12 max 15')));

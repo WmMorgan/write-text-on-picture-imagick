@@ -5,6 +5,8 @@ namespace Controllers;
 
 
 use App\Models\Sign;
+use Faker\Factory;
+use Faker\Provider\Address;
 use GuzzleHttp\Client;
 use PHPUnit\Framework\TestCase;
 
@@ -133,9 +135,20 @@ class RestApiControllerTest extends TestCase
         $this->assertStringEndsWith('not entered', json_decode($response_one->getBody())->message); // Email number invalid or not entered
         $this->assertStringEndsWith('no entered', json_decode($response_two->getBody())->message); // phone number invalid or no entered
     }
-    public function testSignSuccessCreate() {
-       $faker = factory(Sign::class)->create();
-       var_dump($faker);
+
+    public function testSignSuccessCreate()
+    {
+        // use the factory to create a Faker\Generator instance
+        $faker = new Factory();
+        $faker = $faker::create();
+        $header = ['headers' => ['token' => $this->token],
+            'json' => ['name' => $faker->name(),
+                'email' => $faker->email(),
+                'phone' => $faker->e164PhoneNumber()]];
+        $response = $this->client->post('/api/sign', $header);
+
+        $this->assertSame(200, $response->getStatusCode());
+
     }
 
 
