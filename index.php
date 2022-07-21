@@ -108,6 +108,6 @@ $app->delete('/api/delete', RestApiController::class . ':delete');
 $app->post('/api/sign', RestApiController::class . ':sign');
 
 
-$errorMiddleware = $app->addErrorMiddleware(true, false, false);
+$errorMiddleware = $app->addErrorMiddleware(false, false, false);
 
 $app->run();
