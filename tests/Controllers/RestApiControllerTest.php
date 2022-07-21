@@ -4,9 +4,7 @@
 namespace Controllers;
 
 
-use App\Models\Sign;
 use Faker\Factory;
-use Faker\Provider\Address;
 use GuzzleHttp\Client;
 use PHPUnit\Framework\TestCase;
 
@@ -16,12 +14,13 @@ class RestApiControllerTest extends TestCase
     private $client;
     private $token;
     private $siteurl = "http://phpunit.loc";
-
+    private $faker;
 
     public function setUp(): void
     {
         $this->client = new Client(['base_uri' => $this->siteurl, 'http_errors' => false]);
         $this->token = json_decode(file_get_contents(realpath($_SERVER["DOCUMENT_ROOT"]) . '/tokens.json'), true)['token'];
+        $this->faker = new Factory();
     }
 
     public function testInvokeUnauthorized()
@@ -139,16 +138,14 @@ class RestApiControllerTest extends TestCase
     public function testSignSuccessCreate()
     {
         // use the factory to create a Faker\Generator instance
-        $faker = new Factory();
-        $faker = $faker::create();
+        $faker = $this->faker::create();
         $header = ['headers' => ['token' => $this->token],
             'json' => ['name' => $faker->name(),
                 'email' => $faker->email(),
                 'phone' => $faker->e164PhoneNumber()]];
         $response = $this->client->post('/api/sign', $header);
 
-        $this->assertSame(200, $response->getStatusCode());
-
+        $this->assertSame(200, $response->getStatusCode()); // success created fake user
     }
 
 

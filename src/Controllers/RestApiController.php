@@ -23,22 +23,23 @@ public function __construct() {
      * @return mixed
      * api
      */
-    public function __invoke($request, $response, $args) {
+    public function __invoke($request, $response, $args)
+    {
         try {
-        $token = $request->getHeader("token")[0];
-        $userTokenValidate = $this->authUserToken($token);
+            $token = $request->getHeader("token")[0];
+            $userTokenValidate = $this->authUserToken($token);
 
             $your_token = json_encode($userTokenValidate);
             $response = $response->withHeader('Content-type', 'application/json');
             $response->getBody()->write($your_token);
 
-        } catch(\Exception $exception) {
-$error = json_encode([
-    'status' => "error",
-    'message' => $exception->getMessage()
-]);
- $response = $response->withHeader('Content-type', 'application/json')->withStatus(401);
- $response->getBody()->write($error);
+        } catch (\Exception $exception) {
+            $error = json_encode([
+                'status' => "error",
+                'message' => $exception->getMessage()
+            ]);
+            $response = $response->withHeader('Content-type', 'application/json')->withStatus(401);
+            $response->getBody()->write($error);
         }
         return $response;
     }
